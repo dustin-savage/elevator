@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {ElevatorService} from "../service/elevator.service";
 import {Floor} from "../model/floor";
 import {Car} from "../model/car";
@@ -8,6 +8,7 @@ import {RequestService} from "../service/request.service";
 import {CarRequest} from "../model/car-request";
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-building',
   templateUrl: './building.component.html',
   styleUrl: './building.component.scss'
@@ -21,7 +22,8 @@ export class BuildingComponent implements OnInit, OnDestroy {
 
   constructor(private elevatorService: ElevatorService,
               private requestService: RequestService,
-              private snackbar: MatSnackBar) {
+              private snackbar: MatSnackBar,
+              private changeDetectorRef: ChangeDetectorRef) {
 
   }
 
@@ -35,6 +37,7 @@ export class BuildingComponent implements OnInit, OnDestroy {
         this.snackbar.open("Got elevator info!");
         this.floors = (<Floor[]>r[0]).reverse();
         this.cars = <Car[]>r[1];
+        this.changeDetectorRef.markForCheck();
       },
       error: err => {
         this.snackbar.open("Error fetching elevator info: " + JSON.stringify(err), undefined, {
@@ -55,13 +58,16 @@ export class BuildingComponent implements OnInit, OnDestroy {
             console.log("Moving car");
             // Move the car to the desired floor
             car.currentFloor = car.request.floor;
+            this.changeDetectorRef.markForCheck();
             // Using timeouts so the css transitions have time to work.
             setTimeout(() => {
               // Open the door
               car.isDoorOpen = true;
+              this.changeDetectorRef.markForCheck();
               setTimeout(() => {
                 // Close the door
                 car.isDoorOpen = false;
+                this.changeDetectorRef.markForCheck();
                 // Logic for request updates so that we can light up the buttons
                 this.requestService.getRequests().pipe(take(1)).subscribe({
                   next: requests => {
@@ -74,6 +80,7 @@ export class BuildingComponent implements OnInit, OnDestroy {
                     });
                     console.log("Got floor requests");
                     this.floorKeyToRequest = floorKeyToRequest;
+                    this.changeDetectorRef.markForCheck();
                   },
                   error: err => {
                     this.snackbar.open("Error fetching requests: " + JSON.stringify(err));
@@ -126,6 +133,7 @@ export class BuildingComponent implements OnInit, OnDestroy {
         this.floorKeyToRequest[floorKey] = req;
         // Update to detect changes
         this.floorKeyToRequest = Object.assign({}, this.floorKeyToRequest);
+        this.changeDetectorRef.markForCheck();
       },
       error: err => {
         this.snackbar.open("Error sending request: " + JSON.stringify(err), undefined, {
