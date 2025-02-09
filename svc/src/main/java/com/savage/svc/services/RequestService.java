@@ -1,8 +1,8 @@
 package com.savage.svc.services;
 
 import com.savage.svc.dto.Car;
-import com.savage.svc.dto.Direction;
 import com.savage.svc.dto.CarRequest;
+import com.savage.svc.dto.Direction;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import org.slf4j.Logger;
@@ -53,7 +53,7 @@ public class RequestService {
             // Check the other direction
             req = candidates.stream()
                // Any requests the car is heading to but going in the opposite direction
-               .filter(r -> r.getDirection() != car.getDirection())
+               .filter(r -> r.getDirection() != null && r.getDirection() != car.getDirection())
                // Want requests above car if going up, below car if going down.
                .filter(r -> car.getDirection() == Direction.UP ? r.getFloor() >= car.getCurrentFloor() : r.getFloor() <= car.getCurrentFloor())
                // Sort requests by furthest distance from the car

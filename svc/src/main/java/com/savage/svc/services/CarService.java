@@ -1,6 +1,8 @@
 package com.savage.svc.services;
 
-import com.savage.svc.dto.*;
+import com.savage.svc.dto.Car;
+import com.savage.svc.dto.CarRequest;
+import com.savage.svc.dto.Direction;
 import lombok.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +20,7 @@ public class CarService {
    private ElevatorService elevatorService;
    private RequestService requestService;
 
-   @Scheduled(fixedDelay = 3000)
+   @Scheduled(fixedDelay = 1000)
    public void start() {
       List<Car> cars = new ArrayList<>(elevatorService.getCars());
       // Shuffle so one car is not favored for most requests.
@@ -33,15 +35,7 @@ public class CarService {
                      this.moveCar(car, req);
                   }
                } else {
-                  // Return to lobby
-                  if (car.getCurrentFloor() != elevatorService.getLobbyFloor()) {
-                     CarRequest lobbyRequest = CarRequest.builder()
-                        .assignedCarId(car.getId())
-                        .floor(elevatorService.getLobbyFloor())
-                        .build();
-                     lobbyRequest = this.requestService.addRequest(lobbyRequest);
-                     this.moveCar(car, lobbyRequest);
-                  }
+                  // Nothing to do. Could go back to lobby.
                }
             } else {
                // Car is working on tasking. Nothing to do.

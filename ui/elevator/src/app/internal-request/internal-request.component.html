@@ -1,0 +1,5 @@
+<div *ngIf="floors" class="button-container">
+  @for(floor of floors; track floor) {
+  <button mat-button (click)="onRequest(floor)" [ngClass]="getButtonStyle(floor.id)">{{floor.id}}</button>
+  }
+</div>

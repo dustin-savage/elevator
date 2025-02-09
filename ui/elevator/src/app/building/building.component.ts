@@ -73,7 +73,7 @@ export class BuildingComponent implements OnInit, OnDestroy {
                   next: requests => {
                     const floorKeyToRequest: any = {};
                     requests.forEach(r => {
-                      const floorKey = this.buildFloorKey(r.floor, r.direction);
+                      const floorKey = this.requestService.buildRequestKey(r);
                       if (!floorKeyToRequest[floorKey]) {
                         floorKeyToRequest[floorKey] = r;
                       }
@@ -108,10 +108,6 @@ export class BuildingComponent implements OnInit, OnDestroy {
 
   }
 
-  private buildFloorKey(floor: number, direction: "UP" | "DOWN" | undefined): string {
-    return floor + "_" + direction;
-  }
-
   getCarClass(car: Car) {
     return {
       car: true,
@@ -129,10 +125,8 @@ export class BuildingComponent implements OnInit, OnDestroy {
     this.requestService.saveRequest(req).pipe().subscribe({
       next: r => {
         this.snackbar.open("Sent request.");
-        const floorKey = this.buildFloorKey(req.floor, req.direction);
+        const floorKey = this.requestService.buildRequestKey(req);
         this.floorKeyToRequest[floorKey] = req;
-        // Update to detect changes
-        this.floorKeyToRequest = Object.assign({}, this.floorKeyToRequest);
         this.changeDetectorRef.markForCheck();
       },
       error: err => {
@@ -144,7 +138,11 @@ export class BuildingComponent implements OnInit, OnDestroy {
   }
 
   getFloorPanelButtonClass(floor: Floor, direction: "UP" | "DOWN" | undefined) {
-    const floorKey = this.buildFloorKey(floor.id, direction)
+    const floorKey = this.requestService.buildRequestKey({
+      floor: floor.id,
+      direction,
+      assignedCarId: -1
+    });
     return {lit: this.floorKeyToRequest[floorKey]};
   }
 

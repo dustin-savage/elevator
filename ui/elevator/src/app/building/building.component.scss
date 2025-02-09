@@ -31,7 +31,7 @@
   height: calc(20vh); // TODO: assumes 4 floors
   .floor-button-panel {
     padding: 3px;
-    border: 2px solid rgb(98, 89, 31);
+    border: 2px solid rgb(155, 155, 152);
     display: flex;
     align-self: center; // TODO: assumes 2 cars
     flex-direction: column;
@@ -96,4 +96,14 @@
 
 .car-floor-3 {
   top: calc(0px); // TODO: assumes 4 floors
+}
+
+.internal-requests {
+  position: fixed;
+  bottom: 0px;
+  height: calc(20vh - 64px);
+  width: 100%;
+  display: flex;
+  gap: 100px;
+  justify-content: space-evenly;
 }

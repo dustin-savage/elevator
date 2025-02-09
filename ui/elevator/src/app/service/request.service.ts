@@ -21,4 +21,12 @@ export class RequestService {
     return this.http.post<CarRequest>("/svc/elevator/requests", request);
   }
 
+  buildRequestKey(req: CarRequest) {
+    if (!req.direction && req.assignedCarId > -1) {
+      return req.floor + "_" + req.assignedCarId;
+    } else {
+      return req.floor + "_" + req.direction;
+    }
+  }
+
 }

@@ -14,13 +14,15 @@ import {provideHttpClient} from "@angular/common/http";
 import {BuildingComponent} from "./building/building.component";
 import {MatSidenavModule} from "@angular/material/sidenav";
 import {MatToolbarModule} from "@angular/material/toolbar";
+import {InternalRequestComponent} from "./internal-request/internal-request.component";
 
 @NgModule({
   declarations: [
     AppComponent,
     NavComponent,
     NotFoundComponent,
-    BuildingComponent
+    BuildingComponent,
+    InternalRequestComponent
   ],
   bootstrap: [AppComponent],
   imports: [

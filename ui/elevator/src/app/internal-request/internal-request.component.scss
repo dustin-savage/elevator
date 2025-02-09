@@ -1,0 +1,7 @@
+button {
+  background-color: gray;
+  &.lit {
+    color: #ffffff;
+    background-color: #d2bd3c;
+  }
+}

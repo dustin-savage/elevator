@@ -31,5 +31,8 @@
   </div>
 </div>
 
-<!--<button mat-button (click)="onMove()">Move</button>-->
-<!--<button mat-button (click)="onOpenClose()">Open/Close</button>-->
+<div class="internal-requests">
+  @for (car of cars; track car) {
+  <app-internal-request [car]="car" [floorKeyToRequest]=floorKeyToRequest></app-internal-request>
+  }
+</div>
