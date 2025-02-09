@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  ui:
+    image: savage/elevator-ui:0.0.1
+    ports:
+      - "8210:80"
+  svc:
+    image: savage/elevator-svc:0.0.1
+    ports:
+      - "8211:8201"
+      - "7005:5005"

@@ -1,0 +1,35 @@
+<div class="building">
+
+  <div class="shafts">
+    @for (car of cars; track car) {
+    <div class="shaft">
+      <div [ngClass]="getCarClass(car)">
+        <div class="door {{car.isDoorOpen ? 'isOpen' : ''}}"></div>
+        <div class="door {{car.isDoorOpen ? 'isOpen' : ''}}"></div>
+      </div>
+    </div>
+    }
+  </div>
+  <div class="floors">
+    @for (floor of floors; track floor; let i = $index) {
+    <div class="floor">
+      {{floor.id}}
+      <div class="floor-button-panel">
+        @if (i != 0) {
+        <button mat-icon-button (click)="onCarRequest(floor, 'UP')" [ngClass]="getFloorPanelButtonClass(floor, 'UP')">
+          <mat-icon>arrow_upward</mat-icon>
+        </button>
+        }
+        @if (i != floors.length - 1) {
+        <button mat-icon-button (click)="onCarRequest(floor, 'DOWN')" [ngClass]="getFloorPanelButtonClass(floor, 'DOWN')">
+          <mat-icon>arrow_downward</mat-icon>
+        </button>
+        }
+      </div>
+    </div>
+    }
+  </div>
+</div>
+
+<!--<button mat-button (click)="onMove()">Move</button>-->
+<!--<button mat-button (click)="onOpenClose()">Open/Close</button>-->

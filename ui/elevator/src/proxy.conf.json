@@ -1,0 +1,6 @@
+{
+  "/svc": {
+    "target": "http://localhost:8211",
+    "secure": false
+  }
+}
