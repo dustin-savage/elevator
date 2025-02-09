@@ -18,6 +18,10 @@ import java.util.List;
 @EnableScheduling
 public class SvcConfiguration {
 
+   /**
+    * Define the list of floors in the building.
+    * Note although this is configurable, the UI is not responsive enough yet to change from the default.
+    */
    @Bean
    public List<Floor> floors(@Value("${floorCount:4}") int floorCount,
                              @Value("${lobbyFloorIndex:0}") int lobbyIndex) {
@@ -28,11 +32,16 @@ public class SvcConfiguration {
       for (int i = 0; i < floorCount; i++) {
          floors.add(Floor.builder()
             .id(i)
+            .name(i == lobbyIndex ? "L" : Integer.toString(i))
             .build());
       }
       return floors;
    }
 
+   /**
+    * Define the elevator cars in the building.
+    * Note although this is configurable, the UI is not responsive enough yet to change from the default.
+    */
    @Bean
    public List<Car> cars(@Value("${carCount:2}") int carCount) {
       List<Car> cars = new ArrayList<>();
@@ -46,6 +55,9 @@ public class SvcConfiguration {
       return cars;
    }
 
+   /**
+    * Define the elevator service.
+    */
    @Bean
    public ElevatorService elevatorService(@Value("${lobbyFloorIndex:0}") int lobbyIndex,
                                           List<Car> cars,
@@ -63,6 +75,11 @@ public class SvcConfiguration {
          .build();
    }
 
+   /**
+    * Define the service that manages internal and external requests.
+    * Internal: from inside the car.
+    * External: requests from outside the elevator car.
+    */
    @Bean
    public RequestService requestService(@Value("${floorCount:4}") int floorCount) {
       return RequestService.builder()

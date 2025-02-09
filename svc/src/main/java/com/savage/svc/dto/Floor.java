@@ -11,4 +11,5 @@ import lombok.*;
 @ToString
 public class Floor {
    private int id;
+   private String name;
 }

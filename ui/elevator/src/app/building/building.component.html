@@ -13,7 +13,6 @@
   <div class="floors">
     @for (floor of floors; track floor; let i = $index) {
     <div class="floor">
-      {{floor.id}}
       <div class="floor-button-panel">
         @if (i != 0) {
         <button mat-icon-button (click)="onCarRequest(floor, 'UP')" [ngClass]="getFloorPanelButtonClass(floor, 'UP')">
