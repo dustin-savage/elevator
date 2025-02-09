@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+/**
+ * Manages access to our list of floors and elevator cars.
+ */
 @Builder
 public class ElevatorService {
 
@@ -37,8 +40,8 @@ public class ElevatorService {
            .findFirst().orElse(null);
     }
 
-   public int getLobbyFloor() {
-        return this.getFloors().get(this.lobbyIndex).getId();
+   public Floor getLobbyFloor() {
+        return this.getFloors().get(this.lobbyIndex);
    }
 
 }

@@ -56,7 +56,7 @@ public class SvcConfiguration {
    }
 
    /**
-    * Define the elevator service.
+    * Define the elevator service responsible for managing access to floors and cars.
     */
    @Bean
    public ElevatorService elevatorService(@Value("${lobbyFloorIndex:0}") int lobbyIndex,
@@ -77,8 +77,8 @@ public class SvcConfiguration {
 
    /**
     * Define the service that manages internal and external requests.
-    * Internal: from inside the car.
-    * External: requests from outside the elevator car.
+    * Internal request are from inside the elevator car.
+    * External requests are from outside the elevator car on the wall.
     */
    @Bean
    public RequestService requestService(@Value("${floorCount:4}") int floorCount) {
@@ -89,6 +89,9 @@ public class SvcConfiguration {
          .build();
    }
 
+   /**
+    * Define service to manage access to the elevator cars.
+    */
    @Bean
    public CarService carService(ElevatorService elevatorService,
                                 RequestService requestService) {

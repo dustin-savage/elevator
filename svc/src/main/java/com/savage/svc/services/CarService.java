@@ -12,6 +12,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The CarService.serviceRequests() method runs on a fixed schedule. Each run it will:
+ * 1. Shuffle the cars so no one car is favored.
+ * 2. Iterate over each car, and get a request for it to fulfill.
+ * 3. If a request is found for the car, assign the request to the car so that it knows to move.
+ */
 @Builder
 public class CarService {
 
@@ -21,7 +27,7 @@ public class CarService {
    private RequestService requestService;
 
    @Scheduled(fixedDelay = 1000)
-   public void start() {
+   public void serviceRequests() {
       List<Car> cars = new ArrayList<>(elevatorService.getCars());
       // Shuffle so one car is not favored for most requests.
       Collections.shuffle(cars);
@@ -44,6 +50,10 @@ public class CarService {
       }
    }
 
+   /**
+    * Move the car by setting the request on the car. An elevator car can only have one active request at a time,
+    * and the request will be removed when the move is complete.
+    */
    private void moveCar(Car car, CarRequest request) {
       car.setDirection(car.getCurrentFloor() <= request.getFloor() ? Direction.UP : Direction.DOWN);
       car.setRequest(request);
