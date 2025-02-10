@@ -71,6 +71,8 @@ export class BuildingComponent implements OnInit, OnDestroy {
                 // Logic for request updates so that we can light up the buttons
                 this.requestService.getRequests().pipe(take(1)).subscribe({
                   next: requests => {
+                    // Map requests to keys that can be used to apply CSS.
+                    // Ex: "2_UP" in the map would cause the up arrow to light up on the 2nd floor.
                     const floorKeyToRequest: any = {};
                     requests.forEach(r => {
                       const floorKey = this.requestService.buildRequestKey(r);
@@ -78,7 +80,7 @@ export class BuildingComponent implements OnInit, OnDestroy {
                         floorKeyToRequest[floorKey] = r;
                       }
                     });
-                    console.log("Got floor requests");
+                    console.log("Got requests for button panels");
                     this.floorKeyToRequest = floorKeyToRequest;
                     this.changeDetectorRef.markForCheck();
                   },

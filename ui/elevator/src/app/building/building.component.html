@@ -15,12 +15,12 @@
     <div class="floor">
       <div class="floor-button-panel">
         @if (i != 0) {
-        <button mat-icon-button (click)="onCarRequest(floor, 'UP')" [ngClass]="getFloorPanelButtonClass(floor, 'UP')">
+        <button mat-mini-fab (click)="onCarRequest(floor, 'UP')" [ngClass]="getFloorPanelButtonClass(floor, 'UP')">
           <mat-icon>arrow_upward</mat-icon>
         </button>
         }
         @if (i != floors.length - 1) {
-        <button mat-icon-button (click)="onCarRequest(floor, 'DOWN')" [ngClass]="getFloorPanelButtonClass(floor, 'DOWN')">
+        <button mat-mini-fab (click)="onCarRequest(floor, 'DOWN')" [ngClass]="getFloorPanelButtonClass(floor, 'DOWN')">
           <mat-icon>arrow_downward</mat-icon>
         </button>
         }

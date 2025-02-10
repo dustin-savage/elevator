@@ -1,4 +1,17 @@
+.panel-container {
+  width: 250px;
+  .button-container {
+    padding: 3px;
+  }
+}
+
+.label {
+  color: white;
+  margin-top : 10px;
+}
+
 button {
+  margin: 2px;
   background-color: gray;
   &.lit {
     color: #ffffff;

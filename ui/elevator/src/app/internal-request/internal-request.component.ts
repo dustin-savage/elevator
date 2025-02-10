@@ -29,6 +29,7 @@ export class InternalRequestComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Get the floors so we know which buttons to define in the internal panel.
     this.elevatorService.getFloors().pipe(take(1)).subscribe({
       next: floors => {
         console.log("Got floors internal.");
