@@ -1,7 +1,7 @@
 package com.savage.svc.rest;
 
 import com.savage.svc.dto.Floor;
-import com.savage.svc.services.ElevatorService;
+import com.savage.svc.services.api.FloorService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,16 +19,16 @@ import java.util.List;
 public class FloorsController {
    private static final Logger LOGGER = LoggerFactory.getLogger(FloorsController.class);
 
-   private final ElevatorService elevatorService;
+   private final FloorService floorService;
 
    @GetMapping("floors")
    public List<Floor> getFloors() {
-      return elevatorService.getFloors();
+      return floorService.getFloors();
    }
 
    @GetMapping("floors/{id}")
    public ResponseEntity<Floor> getFloor(@PathVariable("id") int id) {
-      Floor floor = elevatorService.getFloorById(id);
+      Floor floor = floorService.getFloorById(id);
       if (floor != null) {
          return ResponseEntity.ok().body(floor);
       }

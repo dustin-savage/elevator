@@ -1,7 +1,7 @@
 package com.savage.svc.rest;
 
 import com.savage.svc.dto.CarRequest;
-import com.savage.svc.services.RequestService;
+import com.savage.svc.services.api.RequestService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

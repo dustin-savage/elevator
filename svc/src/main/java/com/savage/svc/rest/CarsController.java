@@ -1,8 +1,8 @@
 package com.savage.svc.rest;
 
 import com.savage.svc.dto.Car;
-import com.savage.svc.services.ElevatorService;
-import com.savage.svc.services.RequestService;
+import com.savage.svc.services.api.CarService;
+import com.savage.svc.services.api.RequestService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,17 +17,17 @@ import java.util.List;
 public class CarsController {
    private static final Logger LOGGER = LoggerFactory.getLogger(CarsController.class);
 
-   private final ElevatorService elevatorService;
+   private final CarService carService;
    private final RequestService requestService;
 
    @GetMapping("cars")
    public List<Car> getCars() {
-      return elevatorService.getCars();
+      return carService.getCars();
    }
 
    @GetMapping("cars/{id}")
    public ResponseEntity<Car> getCar(@PathVariable("id") int id) {
-      Car car = elevatorService.getCarById(id);
+      Car car = carService.getCarById(id);
       if (car != null) {
          return ResponseEntity.ok().body(car);
       }
@@ -40,7 +40,7 @@ public class CarsController {
          LOGGER.error("Bad request. Car id does not match path variable.");
          return ResponseEntity.badRequest().build();
       }
-      Car car = elevatorService.getCarById(id);
+      Car car = carService.getCarById(id);
       if (car != null) {
          car.setCurrentFloor(carParam.getCurrentFloor());
          requestService.completeRequests(car);

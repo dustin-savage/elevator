@@ -1,8 +1,8 @@
 package com.savage.svc.services;
 
-class ElevatorServiceTest {
+class FloorServiceTest {
 
    // TODO: Unit test each public service method.
-   // See CarServiceTest as an example.
+   // See CarSchedulerTest as an example.
 
 }

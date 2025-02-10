@@ -31,7 +31,7 @@ export class InternalRequestComponent implements OnInit {
   ngOnInit(): void {
     this.elevatorService.getFloors().pipe(take(1)).subscribe({
       next: floors => {
-        this.snackbar.open("Got floors internal.");
+        console.log("Got floors internal.");
         this.floors = floors;
         this.changeDetectorRef.markForCheck();
       },

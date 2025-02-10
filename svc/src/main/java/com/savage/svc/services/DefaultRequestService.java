@@ -17,9 +17,9 @@ import java.util.UUID;
  */
 @Builder
 @AllArgsConstructor
-public class RequestService {
+public class DefaultRequestService implements com.savage.svc.services.api.RequestService {
 
-   private static final Logger LOGGER = LoggerFactory.getLogger(RequestService.class);
+   private static final Logger LOGGER = LoggerFactory.getLogger(DefaultRequestService.class);
 
    private final int minFloor;
    private final int maxFloor;
@@ -29,6 +29,7 @@ public class RequestService {
     * Add a request. For example this would be called when someone presses a button in the elevator,
     * or an up/down arrow on the wall outside the elevator car.
     */
+   @Override
    public CarRequest addRequest(CarRequest request) {
       if (request.getFloor() < minFloor || request.getFloor() > maxFloor) {
          throw new IllegalArgumentException("Request Floor out of range.");
@@ -44,6 +45,7 @@ public class RequestService {
     * There is opportunity to simplify and improve here.
     * Will return the "best" request for the car, or null if there are no requests that can be assigned to the car.
     */
+   @Override
    public CarRequest getRequestCandidate(Car car) {
       // TODO: Simplify this method's logic.
       CarRequest req = null;
@@ -99,6 +101,7 @@ public class RequestService {
    /**
     * Assign a request to a car. This makes the request unavailable for other elevator cars to service.
     */
+   @Override
    public boolean assignRequest(String requestId, Car car) {
       if (requestId == null) {
          throw new IllegalArgumentException("Request Id must not be null.");
@@ -115,10 +118,12 @@ public class RequestService {
       return false;
    }
 
+   @Override
    public List<CarRequest> getRequests() {
       return requests;
    }
 
+   @Override
    public CarRequest getRequestById(String id) {
       return requests.stream()
          .filter(r -> id != null && id.equals(r.getId()))
@@ -132,6 +137,7 @@ public class RequestService {
     * This method is called after the elevator car door opens. Any requests on that floor, not assigned to other cars,
     * and going in the same direction are considered completed. They are safe to discard.
     */
+   @Override
    public void completeRequests(Car car) {
       // Find requests that car is currently fulfilling based on its floor and direction
       List<CarRequest> completeRequests = requests.stream()

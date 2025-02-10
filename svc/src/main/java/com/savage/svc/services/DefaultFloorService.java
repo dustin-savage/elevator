@@ -1,7 +1,7 @@
 package com.savage.svc.services;
 
-import com.savage.svc.dto.Car;
 import com.savage.svc.dto.Floor;
+import com.savage.svc.services.api.FloorService;
 import lombok.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,38 +9,30 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 /**
- * Manages access to our list of floors and elevator cars.
+ * Manages access to our list of floors.
  */
 @Builder
-public class ElevatorService {
+public class DefaultFloorService implements FloorService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ElevatorService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultFloorService.class);
 
     private final List<Floor> floors;
-    private final List<Car> cars;
     private final int lobbyIndex;
 
-    public List<Car> getCars() {
-        return cars;
-    }
-
-    public Car getCarById(int id) {
-        return cars.stream()
-           .filter(c -> c.getId() == id)
-           .findFirst().orElse(null);
-    }
-
+    @Override
     public List<Floor> getFloors() {
         return floors;
     }
 
+    @Override
     public Floor getFloorById(int id) {
         return floors.stream()
            .filter(f -> f.getId() == id)
            .findFirst().orElse(null);
     }
 
-   public Floor getLobbyFloor() {
+    @Override
+    public Floor getLobbyFloor() {
         return this.getFloors().get(this.lobbyIndex);
    }
 

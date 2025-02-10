@@ -3,6 +3,9 @@ package com.savage.svc.services;
 import com.savage.svc.dto.Car;
 import com.savage.svc.dto.CarRequest;
 import com.savage.svc.dto.Direction;
+import com.savage.svc.services.api.CarScheduler;
+import com.savage.svc.services.api.CarService;
+import com.savage.svc.services.api.RequestService;
 import lombok.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,16 +22,17 @@ import java.util.List;
  * 3. If a request is found for the car, assign the request to the car so that it knows to move.
  */
 @Builder
-public class CarService {
+public class DefaultCarScheduler implements CarScheduler {
 
-   private static final Logger LOGGER = LoggerFactory.getLogger(CarService.class);
+   private static final Logger LOGGER = LoggerFactory.getLogger(DefaultCarScheduler.class);
 
-   private ElevatorService elevatorService;
+   private CarService carService;
    private RequestService requestService;
 
    @Scheduled(fixedDelay = 1000)
+   @Override
    public void serviceRequests() {
-      List<Car> cars = new ArrayList<>(elevatorService.getCars());
+      List<Car> cars = new ArrayList<>(carService.getCars());
       // Shuffle so one car is not favored for most requests.
       Collections.shuffle(cars);
       for (Car car : cars) {
