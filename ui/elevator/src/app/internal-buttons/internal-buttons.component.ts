@@ -9,10 +9,10 @@ import {ElevatorService} from "../service/elevator.service";
 
 @Component({
   selector: 'app-internal-request',
-  templateUrl: './internal-request.component.html',
-  styleUrl: './internal-request.component.scss'
+  templateUrl: './internal-buttons.component.html',
+  styleUrl: './internal-buttons.component.scss'
 })
-export class InternalRequestComponent implements OnInit {
+export class InternalButtonsComponent implements OnInit {
 
   @Input()
   car: Car;

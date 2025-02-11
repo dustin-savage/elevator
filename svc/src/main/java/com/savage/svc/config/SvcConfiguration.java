@@ -1,5 +1,8 @@
 package com.savage.svc.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.savage.svc.dto.Car;
 import com.savage.svc.dto.Direction;
 import com.savage.svc.dto.Floor;
@@ -22,6 +25,14 @@ import java.util.List;
 @Configuration
 @EnableScheduling
 public class SvcConfiguration {
+
+   @Bean
+   public ObjectMapper objectMapper() {
+      ObjectMapper objectMapper = new ObjectMapper()
+         .registerModule(new ParameterNamesModule())
+         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+      return objectMapper;
+   }
 
    /**
     * Define the list of floors in the building.

@@ -1,17 +1,22 @@
 package com.savage.svc.dto;
 
 import lombok.*;
+import lombok.extern.jackson.Jacksonized;
 
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 @EqualsAndHashCode
 @ToString
+@Value
+@Jacksonized
 public class CarRequest {
-   private String id;
-   private int floor;
-   private Direction direction;
-   private int assignedCarId;
+   @With
+   private final String id;
+   @With
+   private final int floor;
+   @With
+   private final Direction direction;
+   @With
+   private final int assignedCarId;
 }

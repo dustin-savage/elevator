@@ -9,4 +9,5 @@ public interface CarService {
 
    Car getCarById(int id);
 
+   Car save(Car car);
 }

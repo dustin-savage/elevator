@@ -27,6 +27,8 @@ class DefaultCarSchedulerTest {
    @ParameterizedTest
    @MethodSource("requestData")
    void serviceRequestsTest(List<Car> cars, Integer expectedCallsForCandidate, CarRequest candidate, Integer expectedCallsToAssign) {
+      List<Car> savedCars = new ArrayList<>();
+
       CarService carService = Mockito.mock(CarService.class);
       Mockito.when(carService.getCars())
          .thenReturn(cars);
@@ -34,7 +36,12 @@ class DefaultCarSchedulerTest {
       RequestService requestService = Mockito.mock(RequestService.class);
       Mockito.when(requestService.getRequestCandidate(ArgumentMatchers.any())).thenReturn(candidate);
       Mockito.when(requestService.assignRequest(ArgumentMatchers.anyString(), ArgumentMatchers.any()))
-         .thenReturn(true);
+         .thenReturn(candidate);
+      Mockito.doAnswer(invocationOnMock -> {
+         Car car = invocationOnMock.getArgument(0);
+         savedCars.add(car);
+         return car;
+      }).when(carService).save(ArgumentMatchers.any());
 
       // GIVEN - a CarService
       DefaultCarScheduler defaultCarScheduler = DefaultCarScheduler.builder()
@@ -52,8 +59,9 @@ class DefaultCarSchedulerTest {
       Mockito.verify(requestService, Mockito.times(expectedCallsToAssign))
          .assignRequest(ArgumentMatchers.anyString(), ArgumentMatchers.any());
 
-      if (candidate != null && cars.size() == expectedCallsToAssign) {
-         for (Car car : cars) {
+      if (candidate != null && !savedCars.isEmpty()) {
+         Mockito.verify(carService, Mockito.times(expectedCallsToAssign)).save(ArgumentMatchers.any());
+         for (Car car : savedCars) {
             Assertions.assertNotNull(car.getRequest());
          }
       }
