@@ -10,7 +10,7 @@ public interface RequestService {
 
    CarRequest getRequestCandidate(Car car);
 
-   boolean assignRequest(String requestId, Car car);
+   CarRequest assignRequest(String requestId, Car car);
 
    List<CarRequest> getRequests();
 

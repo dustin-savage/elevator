@@ -41,8 +41,9 @@ public class DefaultCarScheduler implements CarScheduler {
                // Car is doing nothing. Find work.
                CarRequest req = this.requestService.getRequestCandidate(car);
                if (req != null) {
-                  if (this.requestService.assignRequest(req.getId(), car)) {
-                     this.moveCar(car, req);
+                  CarRequest assignedRequest = this.requestService.assignRequest(req.getId(), car);
+                  if (assignedRequest != null) {
+                     this.moveCar(car, assignedRequest);
                   }
                } else {
                   // Nothing to do. Could go back to lobby.
@@ -59,8 +60,9 @@ public class DefaultCarScheduler implements CarScheduler {
     * and the request will be removed when the move is complete.
     */
    private void moveCar(Car car, CarRequest request) {
-      car.setDirection(car.getCurrentFloor() <= request.getFloor() ? Direction.UP : Direction.DOWN);
-      car.setRequest(request);
+      car = car.withDirection(car.getCurrentFloor() <= request.getFloor() ? Direction.UP : Direction.DOWN);
+      car = car.withRequest(request);
+      this.carService.save(car);
    }
 
 }

@@ -8,9 +8,8 @@ import lombok.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.locks.StampedLock;
 
 /**
  * Manages access to the list of requests.
@@ -24,6 +23,8 @@ public class DefaultRequestService implements com.savage.svc.services.api.Reques
    private final int minFloor;
    private final int maxFloor;
    private final List<CarRequest> requests;
+   @Builder.Default
+   private final StampedLock lock = new StampedLock();
 
    /**
     * Add a request. For example this would be called when someone presses a button in the elevator,
@@ -34,9 +35,15 @@ public class DefaultRequestService implements com.savage.svc.services.api.Reques
       if (request.getFloor() < minFloor || request.getFloor() > maxFloor) {
          throw new IllegalArgumentException("Request Floor out of range.");
       }
-      request.setId(UUID.randomUUID().toString());
-      requests.add(request);
-      return request;
+
+      long stamp = lock.writeLock();
+      try {
+         CarRequest addedRequest = request.withId(UUID.randomUUID().toString());
+         requests.add(addedRequest);
+         return addedRequest;
+      } finally {
+         lock.unlockWrite(stamp);
+      }
    }
 
    /**
@@ -49,51 +56,56 @@ public class DefaultRequestService implements com.savage.svc.services.api.Reques
    public CarRequest getRequestCandidate(Car car) {
       // TODO: Simplify this method's logic.
       CarRequest req = null;
-      List<CarRequest> candidates = requests.stream()
-         .filter(r -> r.getAssignedCarId() == -1 || r.getAssignedCarId() == car.getId())
-         .toList();
-      if (!candidates.isEmpty()) {
-         // Car has work. Need to get top priority for this car.
-         // Find first request in car's direction
-         req = candidates.stream()
-            // Any requests going in same direction
-            .filter(r -> r.getDirection() == car.getDirection())
-            // Want requests above car if going up, below car if going down.
-            .filter(r -> car.getDirection() == Direction.UP ? r.getFloor() >= car.getCurrentFloor() : r.getFloor() <= car.getCurrentFloor())
-            // Sort requests by closest distance to car
-            .sorted(Comparator.comparing((CarRequest r) -> Math.abs(car.getCurrentFloor() - r.getFloor())))
-            // Find first request only, otherwise null
-            .findFirst().orElse(null);
-         if (req == null) {
-            // Check the other direction
+      long stamp = lock.readLock();
+      try {
+         List<CarRequest> candidates = requests.stream()
+            .filter(r -> r.getAssignedCarId() == -1 || r.getAssignedCarId() == car.getId())
+            .toList();
+         if (!candidates.isEmpty()) {
+            // Car has work. Need to get top priority for this car.
+            // Find first request in car's direction
             req = candidates.stream()
-               // Any requests the car is heading to but going in the opposite direction
-               .filter(r -> r.getDirection() != null && r.getDirection() != car.getDirection())
+               // Any requests going in same direction
+               .filter(r -> r.getDirection() == car.getDirection())
                // Want requests above car if going up, below car if going down.
                .filter(r -> car.getDirection() == Direction.UP ? r.getFloor() >= car.getCurrentFloor() : r.getFloor() <= car.getCurrentFloor())
-               // Sort requests by furthest distance from the car
-               .sorted(Comparator.comparing((CarRequest r) -> Math.abs(car.getCurrentFloor() - r.getFloor())).reversed())
-               // Find first request only, otherwise null
-               .findFirst().orElse(null);
-         }
-         if (req == null) {
-            // Prioritize internal requests (from people in the car)
-            req = candidates.stream()
-               // Any requests the car is heading to but going in the opposite direction
-               .filter(r -> r.getAssignedCarId() == car.getId())
-               // Sort requests by closest distance to the car
+               // Sort requests by closest distance to car
                .sorted(Comparator.comparing((CarRequest r) -> Math.abs(car.getCurrentFloor() - r.getFloor())))
                // Find first request only, otherwise null
                .findFirst().orElse(null);
+            if (req == null) {
+               // Check the other direction
+               req = candidates.stream()
+                  // Any requests the car is heading to but going in the opposite direction
+                  .filter(r -> r.getDirection() != null && r.getDirection() != car.getDirection())
+                  // Want requests above car if going up, below car if going down.
+                  .filter(r -> car.getDirection() == Direction.UP ? r.getFloor() >= car.getCurrentFloor() : r.getFloor() <= car.getCurrentFloor())
+                  // Sort requests by furthest distance from the car
+                  .sorted(Comparator.comparing((CarRequest r) -> Math.abs(car.getCurrentFloor() - r.getFloor())).reversed())
+                  // Find first request only, otherwise null
+                  .findFirst().orElse(null);
+            }
+            if (req == null) {
+               // Prioritize internal requests (from people in the car)
+               req = candidates.stream()
+                  // Any requests the car is heading to but going in the opposite direction
+                  .filter(r -> r.getAssignedCarId() == car.getId())
+                  // Sort requests by closest distance to the car
+                  .sorted(Comparator.comparing((CarRequest r) -> Math.abs(car.getCurrentFloor() - r.getFloor())))
+                  // Find first request only, otherwise null
+                  .findFirst().orElse(null);
+            }
+            if (req == null) {
+               // Just pick the closest one then
+               req = candidates.stream()
+                  // Sort requests by distance to car
+                  .sorted(Comparator.comparing((CarRequest r) -> Math.abs(car.getCurrentFloor() - r.getFloor())))
+                  // Find first request only, otherwise null
+                  .findFirst().orElse(null);
+            }
          }
-         if (req == null) {
-            // Just pick the closest one then
-            req = candidates.stream()
-               // Sort requests by distance to car
-               .sorted(Comparator.comparing((CarRequest r) -> Math.abs(car.getCurrentFloor() - r.getFloor())))
-               // Find first request only, otherwise null
-               .findFirst().orElse(null);
-         }
+      } finally {
+         lock.unlockRead(stamp);
       }
       return req;
    }
@@ -102,32 +114,50 @@ public class DefaultRequestService implements com.savage.svc.services.api.Reques
     * Assign a request to a car. This makes the request unavailable for other elevator cars to service.
     */
    @Override
-   public boolean assignRequest(String requestId, Car car) {
+   public CarRequest assignRequest(String requestId, Car car) {
       if (requestId == null) {
          throw new IllegalArgumentException("Request Id must not be null.");
       }
-      // Find request by id
-      CarRequest request = requests.stream()
-         .filter(r -> r.getId().equals(requestId))
-         .findFirst().orElse(null);
-      if (request != null) {
-         // Assign it to the car.
-         request.setAssignedCarId(car.getId());
-         return true;
+      long stamp = lock.writeLock();
+      try {
+         // Find request by id
+         CarRequest request = requests.stream()
+            .filter(r -> r.getId().equals(requestId))
+            .findFirst().orElse(null);
+         if (request != null) {
+            // Assign it to the car.
+            CarRequest updatedRequest = request.withAssignedCarId(car.getId());
+            int i = requests.indexOf(request);
+            requests.remove(request);
+            requests.add(i, updatedRequest);
+            return updatedRequest;
+         }
+      } finally {
+         lock.unlockWrite(stamp);
       }
-      return false;
+      return null;
    }
 
    @Override
    public List<CarRequest> getRequests() {
-      return requests;
+      long stamp = lock.readLock();
+      try {
+         return Collections.unmodifiableList(requests);
+      } finally {
+         lock.unlockRead(stamp);
+      }
    }
 
    @Override
    public CarRequest getRequestById(String id) {
-      return requests.stream()
-         .filter(r -> id != null && id.equals(r.getId()))
-         .findFirst().orElse(null);
+      long stamp = lock.readLock();
+      try {
+         return requests.stream()
+            .filter(r -> id != null && id.equals(r.getId()))
+            .findFirst().orElse(null);
+      } finally {
+         lock.unlockRead(stamp);
+      }
    }
 
    /**
@@ -139,16 +169,21 @@ public class DefaultRequestService implements com.savage.svc.services.api.Reques
     */
    @Override
    public void completeRequests(Car car) {
-      // Find requests that car is currently fulfilling based on its floor and direction
-      List<CarRequest> completeRequests = requests.stream()
-         .filter(r -> r.getFloor() == car.getCurrentFloor())
-         .filter(r -> (r.getAssignedCarId() == car.getId())
-            || (r.getAssignedCarId() == -1 && r.getDirection() == car.getDirection()))
-         .toList();
-      if (!completeRequests.isEmpty()) {
-         // Log completion and remove from request list.
-         LOGGER.info("Requests completed: " + completeRequests);
-         requests.removeAll(completeRequests);
+      long stamp = lock.writeLock();
+      try {
+         // Find requests that car is currently fulfilling based on its floor and direction
+         List<CarRequest> completeRequests = requests.stream()
+            .filter(r -> r.getFloor() == car.getCurrentFloor())
+            .filter(r -> (r.getAssignedCarId() == car.getId())
+               || (r.getAssignedCarId() == -1 && r.getDirection() == car.getDirection()))
+            .toList();
+         if (!completeRequests.isEmpty()) {
+            // Log completion and remove from request list.
+            LOGGER.info("Requests completed: " + completeRequests);
+            requests.removeAll(completeRequests);
+         }
+      } finally {
+         lock.unlockWrite(stamp);
       }
    }
 

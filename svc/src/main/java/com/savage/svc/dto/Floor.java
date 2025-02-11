@@ -1,15 +1,16 @@
 package com.savage.svc.dto;
 
 import lombok.*;
+import lombok.extern.jackson.Jacksonized;
 
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 @EqualsAndHashCode
 @ToString
+@Value
+@Jacksonized
 public class Floor {
-   private int id;
-   private String name;
+   private final int id;
+   private final String name;
 }

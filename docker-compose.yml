@@ -9,3 +9,6 @@ services:
     ports:
       - "8211:8201"
       - "7005:5005"
+    #environment:
+      #floorCount: 10
+      #carCount: 4

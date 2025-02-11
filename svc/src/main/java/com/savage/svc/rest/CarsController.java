@@ -42,9 +42,10 @@ public class CarsController {
       }
       Car car = carService.getCarById(id);
       if (car != null) {
-         car.setCurrentFloor(carParam.getCurrentFloor());
+         car = car.withCurrentFloor(carParam.getCurrentFloor());
          requestService.completeRequests(car);
-         car.setRequest(null);
+         car = car.withRequest(null);
+         car = this.carService.save(car);
          return ResponseEntity.ok(car);
       }
       return ResponseEntity.notFound().build();
