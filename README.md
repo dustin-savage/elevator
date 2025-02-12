@@ -1,7 +1,7 @@
 # Elevator
 
-This elevator app implements an elevator in Java with REST access to elevator cars, building floors, and requests for service.
-This project also includes an angular UI to simulate and test the service logic.
+The elevator app implements elevator logic in Java and provides a REST API to access elevator cars, floors, and requests for service.
+This project also includes an angular UI to simulate the elevator system.
 
 ## Prerequisites
 
@@ -37,12 +37,12 @@ Access the UI at [http://localhost:8210/app/elevator](http://localhost:8210/app/
 ## UI Overview
 
 The UI simulates an elevator, and leverages the Java services via REST for building state (i.e. number of floors),
-car state (i.e. how many cars, what floor they're on), and managing requests (i.e. calling the elevator to a floor.).
+car state (i.e. how many cars, what floor they're on), and requests (i.e. calling the elevator to a floor.).
 
 ![UI](./ui.png)
 
 ## Deployment
-Both the Java services and UI are packaged as Docker containers.
+Both the Java services and UI are packaged as Docker images.
 
 ![Dockers](./dockers.jpg)
 
@@ -58,7 +58,7 @@ Both the Java services and UI are packaged as Docker containers.
   * Next prioritize the closest internal request (from people in the car). This means if someone gets in a car going up, and pushes the Lobby button, they will have to wait until all UP requests are serviced. The passenger can avoid this by instead getting into a car that is going down.
   * If no request matches the above criteria, just service the closest request to the car.
 * Multiple cars should never be assigned the same request.
-* 2 requests from the same floor in different directions should be treated as separate requests. 
+* 2 requests from the same floor in different directions should be treated as separate requests.
 * Internal requests can only be assigned to the car it originated from. Ex: If I'm in car 1 and press floor 3, only car 1 can service that request.
 
 ## Future work
@@ -67,10 +67,10 @@ Both the Java services and UI are packaged as Docker containers.
 - Svc: Make java objects immutable (progress).
 - Svc: Handle read/write concurrency when accessing floors / cars / requests. (progress)
 - Svc: Unit test all services. An example unit test is written for the DefaultCarScheduler.
-  - Especially need to unit test the `DefaultRequestService.getRequestCandidate()` method since it has complex logic. Then the method could be simplified, using the passing unit test as confirmation. Then we can simplify the method and ensure all tests still pass.
+  - Especially need to unit test the `DefaultRequestService.getRequestCandidate()` method since it has complex logic. Then the method could be simplified, using the passing unit test as confirmation.
 - Svc/UI: Use websockets for push notifications so that the UI does not have to poll for request updates and car assignments.
 - UI: Automate e2e tests using playwright.
-- UI: Need dynamic layout for configurable number of cars / floors. Currently, there are some assumptions about based on default number of floors (4) and cars (2).
+- UI: Need dynamic layout for configurable number of cars / floors. Currently, the UI assumes a default number of floors (4) and cars (2).
 - UI: Split the `BuildingComponent` into several smaller components. For example, create and compose the following new components:
   - `InternalButtonComponent` (progress)
   - `FloorComponent`
