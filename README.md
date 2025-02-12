@@ -67,7 +67,7 @@ Both the Java services and UI are packaged as Docker images.
 - Svc: Make java objects immutable (progress).
 - Svc: Handle read/write concurrency when accessing floors / cars / requests. (progress)
 - Svc: Unit test all services. Example unit tests are written for `DefaultCarScheduler` and `DefaultRequestService`.
-  - The `DefaultRequestService.getRequestCandidate()` is great to test since it has complex logic. The parameterized test is written to it can easily be expanded with more use cases.
+  - The `DefaultRequestService.getRequestCandidate()` is fun to test since it has simple input/output, but complex internal logic. The parameterized test is written so that it can easily be expanded with more use cases.
 - Svc/UI: Use websockets for push notifications so that the UI does not have to poll for request updates and car assignments.
 - UI: Automate e2e tests using playwright.
 - UI: Need dynamic layout for configurable number of cars / floors. Currently, the UI assumes a default number of floors (4) and cars (2).
@@ -78,6 +78,11 @@ Both the Java services and UI are packaged as Docker images.
   - `CarComponent`
   - `FloorButtonPanelComponent`
 - UI: Add car direction indicators when a car arrives at a floor.
-- UI: Add a feature to enable/disable a car.
+- UI: Add a feature to enable/disable a car. When disabled, a car should:
+  - Open its doors to let any passengers out
+  - Un-assign any assigned external requests, making them candidates for other (enabled) cars.
+  - Drop (delete) all internal requests
+  - Stop receiving new requests -- they should only be routed to other (enabled) cars.
+  - Have an indicator that it is disabled.
 - UI: Handle if more than 1 browser is connected to the service.
 - Test and bugfix.
