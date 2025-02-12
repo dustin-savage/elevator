@@ -16,15 +16,15 @@ class RequestServiceTest {
     * Parameterized test for the DefaultRequestService.getRequestCandidate() method.
     */
    @ParameterizedTest
-   @MethodSource("serviceRequestData")
-   void serviceRequestsTest(Car car, List<CarRequest> requests, String expectedRequestId) {
+   @MethodSource("requestCandidateData")
+   void getRequestCandidateTest(Car car, List<CarRequest> requests, String expectedRequestId) {
 
       // GIVEN - a DefaultRequestService
       DefaultRequestService defaultRequestService = DefaultRequestService.builder()
          .requests(requests)
          .build();
 
-      // WHEN - serviceRequests() is called
+      // WHEN - getRequestCandidate() is called
       CarRequest request = defaultRequestService.getRequestCandidate(car);
 
       // THEN - the expected request is returned.
@@ -38,7 +38,7 @@ class RequestServiceTest {
       }
    }
 
-   public static Stream<Object> serviceRequestData() {
+   public static Stream<Object> requestCandidateData() {
       // The following stream is passed as parameters to the above test.
       return Stream.of(
          // 1. One unassigned request. Should be assigned to the car.
