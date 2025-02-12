@@ -43,7 +43,7 @@ class DefaultCarSchedulerTest {
          return car;
       }).when(carService).save(ArgumentMatchers.any());
 
-      // GIVEN - a CarService
+      // GIVEN - a DefaultCarScheduler
       DefaultCarScheduler defaultCarScheduler = DefaultCarScheduler.builder()
          .carService(carService)
          .requestService(requestService)

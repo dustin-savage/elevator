@@ -54,6 +54,10 @@ public class DefaultRequestService implements com.savage.svc.services.api.Reques
     */
    @Override
    public CarRequest getRequestCandidate(Car car) {
+      if (car == null) {
+         throw new IllegalArgumentException("Car must not be null");
+      }
+
       // TODO: Simplify this method's logic.
       CarRequest req = null;
       long stamp = lock.readLock();
