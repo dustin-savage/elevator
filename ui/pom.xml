@@ -39,12 +39,23 @@
                   <phase>generate-resources</phase>
                   <configuration>
                      <workingDirectory>elevator</workingDirectory>
+                     <arguments>install</arguments>
+                  </configuration>
+               </execution>
+               <execution>
+                  <id>ng build</id>
+                  <goals>
+                     <goal>npm</goal>
+                  </goals>
+                  <phase>generate-resources</phase>
+                  <configuration>
+                     <workingDirectory>elevator</workingDirectory>
                      <arguments>run build</arguments>
                   </configuration>
                </execution>
             </executions>
             <configuration>
-               <nodeVersion>v19.4.0</nodeVersion>
+               <nodeVersion>v20.11.1</nodeVersion>
                <installDirectory>target</installDirectory>
             </configuration>
          </plugin>
