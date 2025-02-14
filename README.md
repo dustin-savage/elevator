@@ -53,7 +53,7 @@ Both the Java services and UI are packaged as Docker images.
 * Requests can come from a floor (Ex: Pick me up from floor 3 and take me down)
 * Requests can come from inside the car (Ex: I'm in the car, take me to floor 2)
 * Cars should prioritize requests efficiently. For Ex:
-  * Prioritize the closest request in the car's direction, wanting to go in the same direction. Ex: If I'm moving up, I should keep moving up if there are more unassigned requests above that also want to go up.
+  * Prioritize the closest request in the car's direction, wanting to go in the same direction (or wanting to get out of the car). Ex: If I'm moving up, I should keep moving up if there are more unassigned requests above that also want to go up. But I should also let any passengers out along the way.
   * Next prioritize the furthest request in the car's direction, wanting to go the opposite direction. Ex: If I'm moving up, get the furthest request above me that wants to go down.
   * Next prioritize the closest internal request (from people in the car). This means if someone gets in a car going up, and pushes the Lobby button, they will have to wait until all UP requests are serviced. The passenger can avoid this by instead getting into a car that is going down.
   * If no request matches the above criteria, just service the closest request to the car.

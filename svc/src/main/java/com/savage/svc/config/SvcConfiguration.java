@@ -105,11 +105,13 @@ public class SvcConfiguration {
     * External requests are from outside the elevator car (on the wall panel).
     */
    @Bean
-   public RequestService requestService(@Value("${floorCount:4}") int floorCount) {
+   public RequestService requestService(@Value("${floorCount:4}") int floorCount,
+                                        CarService carService) {
       return DefaultRequestService.builder()
          .requests(new ArrayList<>())
          .minFloor(0)
          .maxFloor(floorCount - 1)
+         .carService(carService)
          .build();
    }
 
