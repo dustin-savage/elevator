@@ -3,12 +3,16 @@ package com.savage.svc.services;
 import com.savage.svc.dto.Car;
 import com.savage.svc.dto.CarRequest;
 import com.savage.svc.dto.Direction;
+import com.savage.svc.services.api.CarService;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.locks.StampedLock;
 
 /**
@@ -23,6 +27,7 @@ public class DefaultRequestService implements com.savage.svc.services.api.Reques
    private final int minFloor;
    private final int maxFloor;
    private final List<CarRequest> requests;
+   private final CarService carService;
    @Builder.Default
    private final StampedLock lock = new StampedLock();
 
@@ -50,17 +55,21 @@ public class DefaultRequestService implements com.savage.svc.services.api.Reques
     * Gets a candidate request for a given car based on position (which floor the car is on relative to the request),
     * and direction the car is moving.
     * There is opportunity to simplify and improve here.
-    * Will return the "best" request for the car, or null if there are no requests that can be assigned to the car.
+    * Will determine the "best" request for the car, and if one exists, assign it to the car.
     */
    @Override
-   public CarRequest getRequestCandidate(Car car) {
+   public Car assignRequest(Car car) {
       if (car == null) {
          throw new IllegalArgumentException("Car must not be null");
       }
+      if (car.getRequest() != null) {
+         // Car already has a request. Return it.
+         return car;
+      }
 
-      // TODO: Simplify this method's logic.
-      CarRequest req = null;
-      long stamp = lock.readLock();
+      // TODO: Simplify this method's logic after tests are written.
+      CarRequest req;
+      long stamp = lock.writeLock();
       try {
          List<CarRequest> candidates = requests.stream()
             .filter(r -> r.getAssignedCarId() == -1 || r.getAssignedCarId() == car.getId())
@@ -70,7 +79,7 @@ public class DefaultRequestService implements com.savage.svc.services.api.Reques
             // Find first request in car's direction
             req = candidates.stream()
                // Any requests going in same direction
-               .filter(r -> r.getDirection() == car.getDirection())
+               .filter(r -> r.getDirection() == car.getDirection() || r.getDirection() == null)
                // Want requests above car if going up, below car if going down.
                .filter(r -> car.getDirection() == Direction.UP ? r.getFloor() >= car.getCurrentFloor() : r.getFloor() <= car.getCurrentFloor())
                // Sort requests by closest distance to car
@@ -107,39 +116,23 @@ public class DefaultRequestService implements com.savage.svc.services.api.Reques
                   // Find first request only, otherwise null
                   .findFirst().orElse(null);
             }
-         }
-      } finally {
-         lock.unlockRead(stamp);
-      }
-      return req;
-   }
-
-   /**
-    * Assign a request to a car. This makes the request unavailable for other elevator cars to service.
-    */
-   @Override
-   public CarRequest assignRequest(String requestId, Car car) {
-      if (requestId == null) {
-         throw new IllegalArgumentException("Request Id must not be null.");
-      }
-      long stamp = lock.writeLock();
-      try {
-         // Find request by id
-         CarRequest request = requests.stream()
-            .filter(r -> r.getId().equals(requestId))
-            .findFirst().orElse(null);
-         if (request != null) {
-            // Assign it to the car.
-            CarRequest updatedRequest = request.withAssignedCarId(car.getId());
-            int i = requests.indexOf(request);
-            requests.remove(request);
-            requests.add(i, updatedRequest);
-            return updatedRequest;
+            if (req != null) {
+               // Assign the request to the car so it knows to move. A car can only have one active request at a time,
+               // and the request will be removed when the move is complete via the completeRequest() method.
+               CarRequest updatedRequest = req.withAssignedCarId(car.getId());
+               int i = requests.indexOf(req);
+               requests.remove(req);
+               requests.add(i, updatedRequest);
+               // Update the car and save it
+               Car carUpdate = car.withDirection(car.getCurrentFloor() <= req.getFloor() ? Direction.UP : Direction.DOWN);
+               carUpdate = carUpdate.withRequest(req);
+               return this.carService.save(carUpdate);
+            }
          }
       } finally {
          lock.unlockWrite(stamp);
       }
-      return null;
+      return car;
    }
 
    @Override

@@ -8,9 +8,7 @@ import java.util.List;
 public interface RequestService {
    CarRequest addRequest(CarRequest request);
 
-   CarRequest getRequestCandidate(Car car);
-
-   CarRequest assignRequest(String requestId, Car car);
+   Car assignRequest(Car car);
 
    List<CarRequest> getRequests();
 

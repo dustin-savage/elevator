@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * The CarService.serviceRequests() method runs on a fixed schedule. Each run it will:
+ * The DefaultCarScheduler.serviceRequests() method runs on a fixed schedule. Each run it will:
  * 1. Shuffle the cars so no one car is favored.
  * 2. Iterate over each car, and get a request for it to fulfill.
  * 3. If a request is found for the car, assign the request to the car so that it knows to move.
@@ -38,31 +38,13 @@ public class DefaultCarScheduler implements CarScheduler {
       for (Car car : cars) {
          if (car.isEnabled()) {
             if (car.getRequest() == null) {
-               // Car is doing nothing. Find work.
-               CarRequest req = this.requestService.getRequestCandidate(car);
-               if (req != null) {
-                  CarRequest assignedRequest = this.requestService.assignRequest(req.getId(), car);
-                  if (assignedRequest != null) {
-                     this.moveCar(car, assignedRequest);
-                  }
-               } else {
-                  // Nothing to do. Could go back to lobby.
-               }
+               // Car is doing nothing. Assign work.
+               this.requestService.assignRequest(car);
             } else {
                // Car is working on tasking. Nothing to do.
             }
          }
       }
-   }
-
-   /**
-    * Move the car by setting the request on the car. An elevator car can only have one active request at a time,
-    * and the request will be removed when the move is complete.
-    */
-   private void moveCar(Car car, CarRequest request) {
-      car = car.withDirection(car.getCurrentFloor() <= request.getFloor() ? Direction.UP : Direction.DOWN);
-      car = car.withRequest(request);
-      this.carService.save(car);
    }
 
 }
