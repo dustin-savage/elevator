@@ -1,0 +1,32 @@
+.floor {
+  flex-grow: 1;
+  border: 2px solid black;
+  border-top: 0px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  height: calc(20vh - 2px); // TODO: assumes 4 floors
+  .floor-button-panel {
+    background: #fff;
+    box-shadow: 3px 3px 7px -1px #535252;
+    padding: 4px;
+    border: 1px solid rgb(16 22 59 / 15%);
+    display: flex;
+    align-self: center; // TODO: assumes 2 cars
+    flex-direction: column;
+    gap: 5px;
+    &.hidden {
+      visibility: hidden;
+      background-color: #1a7f37;
+    }
+    button {
+      box-shadow: 1px 2px 6px 1px #434343;
+      background-color: #000000;
+      &.lit {
+        color: #ffffff;
+        background-color: #d2bd3c;
+      }
+    }
+
+  }
+}

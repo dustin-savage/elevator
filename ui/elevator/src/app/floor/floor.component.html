@@ -1,0 +1,10 @@
+<div class="floor">
+  <div class="floor-button-panel">
+    <button *ngIf="!isTop" mat-mini-fab (click)="onCarRequest(floor, 'UP')" [ngClass]="getFloorPanelButtonClass(floor, 'UP')">
+      <mat-icon>arrow_upward</mat-icon>
+    </button>
+    <button *ngIf="!isBottom" mat-mini-fab (click)="onCarRequest(floor, 'DOWN')" [ngClass]="getFloorPanelButtonClass(floor, 'DOWN')">
+      <mat-icon>arrow_downward</mat-icon>
+    </button>
+  </div>
+</div>

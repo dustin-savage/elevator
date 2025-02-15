@@ -2,9 +2,10 @@
   <div class="label">Internal Button Panel</div>
   <div class="button-container">
     <div *ngIf="floors">
-      @for(floor of floors; track floor) {
-      <button mat-mini-fab (click)="onRequest(floor)" [ngClass]="getButtonStyle(floor.id)">{{floor.name}}</button>
-      }
+      <button *ngFor="let floor of floors"
+              mat-mini-fab
+              (click)="onRequest(floor)"
+              [ngClass]="getButtonStyle(floor.id)">{{floor.name}}</button>
     </div>
   </div>
 </div>
