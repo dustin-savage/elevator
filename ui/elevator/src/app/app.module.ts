@@ -11,18 +11,15 @@ import {NotFoundComponent} from './not-found/not-found.component';
 import {MatDateFnsModule} from "@angular/material-date-fns-adapter";
 import {MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule} from "@angular/material/snack-bar";
 import {provideHttpClient} from "@angular/common/http";
-import {BuildingComponent} from "./building/building.component";
 import {MatSidenavModule} from "@angular/material/sidenav";
 import {MatToolbarModule} from "@angular/material/toolbar";
-import {InternalButtonsComponent} from "./internal-buttons/internal-buttons.component";
+import {FloorComponent} from "./floor/floor.component";
 
 @NgModule({
   declarations: [
     AppComponent,
     NavComponent,
-    NotFoundComponent,
-    BuildingComponent,
-    InternalButtonsComponent
+    NotFoundComponent
   ],
   bootstrap: [AppComponent],
   imports: [
@@ -36,8 +33,7 @@ import {InternalButtonsComponent} from "./internal-buttons/internal-buttons.comp
     MatDateFnsModule,
     MatSnackBarModule
   ],
-  exports: [
-  ],
+  exports: [],
   providers: [
     {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 3000}},
     provideHttpClient()

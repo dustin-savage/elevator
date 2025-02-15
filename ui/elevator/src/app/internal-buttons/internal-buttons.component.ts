@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {Floor} from "../model/floor";
 import {RequestService} from "../service/request.service";
 import {Car} from "../model/car";
@@ -6,11 +6,19 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {CarRequest} from "../model/car-request";
 import {take} from "rxjs";
 import {ElevatorService} from "../service/elevator.service";
+import {CommonModule} from "@angular/common";
+import {MatButtonModule} from "@angular/material/button";
 
 @Component({
-  selector: 'app-internal-request',
+  selector: 'app-internal-buttons',
   templateUrl: './internal-buttons.component.html',
-  styleUrl: './internal-buttons.component.scss'
+  styleUrl: './internal-buttons.component.scss',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatButtonModule
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InternalButtonsComponent implements OnInit {
 

@@ -11,27 +11,14 @@
     }
   </div>
   <div class="floors">
-    @for (floor of floors; track floor; let i = $index) {
-    <div class="floor">
-      <div class="floor-button-panel">
-        @if (i != 0) {
-        <button mat-mini-fab (click)="onCarRequest(floor, 'UP')" [ngClass]="getFloorPanelButtonClass(floor, 'UP')">
-          <mat-icon>arrow_upward</mat-icon>
-        </button>
-        }
-        @if (i != floors.length - 1) {
-        <button mat-mini-fab (click)="onCarRequest(floor, 'DOWN')" [ngClass]="getFloorPanelButtonClass(floor, 'DOWN')">
-          <mat-icon>arrow_downward</mat-icon>
-        </button>
-        }
-      </div>
-    </div>
-    }
+    <app-floor *ngFor="let floor of floors; index as i"
+               [floor]="floor"
+               [isTop]="i === floors[floors.length - 1].id"
+               [isBottom]="i === floors[0].id"
+               [floorKeyToRequest]=floorKeyToRequest></app-floor>
   </div>
 </div>
 
-<div class="internal-requests">
-  @for (car of cars; track car) {
-  <app-internal-request [car]="car" [floorKeyToRequest]=floorKeyToRequest></app-internal-request>
-  }
+<div class="internal-buttons">
+  <app-internal-buttons *ngFor="let car of cars" [car]="car" [floorKeyToRequest]=floorKeyToRequest></app-internal-buttons>
 </div>

@@ -73,7 +73,7 @@ Both the Java services and UI are packaged as Docker images.
 - UI: Need dynamic layout for configurable number of cars / floors. Currently, the UI assumes a default number of floors (4) and cars (2).
 - UI: Split the `BuildingComponent` into several smaller components. For example, create and compose the following new components:
   - `InternalButtonComponent` (progress)
-  - `FloorComponent`
+  - `FloorComponent` (progress)
   - `ElevatorShaftComponent`
   - `CarComponent`
   - `FloorButtonPanelComponent`

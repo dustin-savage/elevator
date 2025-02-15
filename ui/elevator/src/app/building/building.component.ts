@@ -6,12 +6,22 @@ import {forkJoin, ReplaySubject, take, takeUntil} from "rxjs";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {RequestService} from "../service/request.service";
 import {CarRequest} from "../model/car-request";
+import {CommonModule, NgForOf} from "@angular/common";
+import {FloorComponent} from "../floor/floor.component";
+import {InternalButtonsComponent} from "../internal-buttons/internal-buttons.component";
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-building',
+  standalone: true,
+  imports: [
+    NgForOf,
+    FloorComponent,
+    CommonModule,
+    InternalButtonsComponent
+  ],
   templateUrl: './building.component.html',
-  styleUrl: './building.component.scss'
+  styleUrl: './building.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BuildingComponent implements OnInit, OnDestroy {
 
@@ -24,7 +34,6 @@ export class BuildingComponent implements OnInit, OnDestroy {
               private requestService: RequestService,
               private snackbar: MatSnackBar,
               private changeDetectorRef: ChangeDetectorRef) {
-
   }
 
   ngOnInit(): void {
@@ -116,36 +125,6 @@ export class BuildingComponent implements OnInit, OnDestroy {
       ["car-floor-" + car.currentFloor]: true,
       isOpen: car.isDoorOpen
     };
-  }
-
-  onCarRequest(floor: Floor, direction: "UP" | "DOWN") {
-    const req: CarRequest = {
-      floor: floor.id,
-      direction: direction,
-      assignedCarId: -1
-    };
-    this.requestService.saveRequest(req).pipe().subscribe({
-      next: r => {
-        this.snackbar.open("Sent request.");
-        const floorKey = this.requestService.buildRequestKey(req);
-        this.floorKeyToRequest[floorKey] = req;
-        this.changeDetectorRef.markForCheck();
-      },
-      error: err => {
-        this.snackbar.open("Error sending request: " + JSON.stringify(err), undefined, {
-          duration: 10000
-        });
-      }
-    });
-  }
-
-  getFloorPanelButtonClass(floor: Floor, direction: "UP" | "DOWN" | undefined) {
-    const floorKey = this.requestService.buildRequestKey({
-      floor: floor.id,
-      direction,
-      assignedCarId: -1
-    });
-    return {lit: this.floorKeyToRequest[floorKey]};
   }
 
   ngOnDestroy(): void {
