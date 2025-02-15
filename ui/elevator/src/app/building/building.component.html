@@ -1,14 +1,10 @@
 <div class="building">
 
   <div class="shafts">
-    @for (car of cars; track car) {
-    <div class="shaft">
-      <div [ngClass]="getCarClass(car)">
-        <div class="door {{car.isDoorOpen ? 'isOpen' : ''}}"></div>
-        <div class="door {{car.isDoorOpen ? 'isOpen' : ''}}"></div>
-      </div>
+    <div *ngFor="let car of cars">
+      <app-car [car]="car"
+               [floors]="floors"></app-car>
     </div>
-    }
   </div>
   <div class="floors">
     <app-floor *ngFor="let floor of floors; index as i"

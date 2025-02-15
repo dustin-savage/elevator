@@ -9,15 +9,16 @@ import {CarRequest} from "../model/car-request";
 import {CommonModule, NgForOf} from "@angular/common";
 import {FloorComponent} from "../floor/floor.component";
 import {InternalButtonsComponent} from "../internal-buttons/internal-buttons.component";
+import {CarComponent} from "../car/car.component";
 
 @Component({
   selector: 'app-building',
   standalone: true,
   imports: [
-    NgForOf,
     FloorComponent,
     CommonModule,
-    InternalButtonsComponent
+    InternalButtonsComponent,
+    CarComponent
   ],
   templateUrl: './building.component.html',
   styleUrl: './building.component.scss',
@@ -117,14 +118,6 @@ export class BuildingComponent implements OnInit, OnDestroy {
       }
     });
 
-  }
-
-  getCarClass(car: Car) {
-    return {
-      car: true,
-      ["car-floor-" + car.currentFloor]: true,
-      isOpen: car.isDoorOpen
-    };
   }
 
   ngOnDestroy(): void {

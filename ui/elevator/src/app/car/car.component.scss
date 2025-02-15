@@ -1,0 +1,32 @@
+.shaft {
+  position: relative;
+  height: calc(100% - 4px);
+  width: 250px;
+  border: 4px solid black;
+  border-bottom: 2px solid black;
+  border-top: 0;
+  background-color: rgb(129 133 139);
+}
+
+.car {
+  position: absolute;
+  width: 246px;
+  border: 2px solid #545454;
+  background-color: rgba(255, 255, 255, 0.78);
+  display: flex;
+  justify-content: space-between;
+  transition: 1s ease-in-out;
+  .door {
+    height: 100%;
+    flex-grow: 1;
+    background-color: rgba(85, 131, 218, 0.78);
+    border: 1px solid black;
+    transition: 1.5s ease-in-out;
+    min-width: 15px;
+    &.isOpen {
+      width: 15px;
+      flex-grow: 0;
+      transition: 1.5s ease-in-out;
+    }
+  }
+}
