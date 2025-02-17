@@ -1,7 +1,10 @@
 .panel-container {
-  width: 250px;
+  display: flex;
   .button-container {
     padding: 3px;
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: wrap;
   }
 }
 
@@ -11,7 +14,9 @@
 }
 
 button {
-  margin: 2px;
+  height: 30px;
+  width: 30px;
+  margin: 5px;
   background-color: gray;
   &.lit {
     color: #ffffff;

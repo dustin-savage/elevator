@@ -1,14 +1,16 @@
 <div class="building">
 
-  <div class="shafts">
-    <div *ngFor="let car of cars">
+  <div class="shafts" [style]="getShaftsStyle()">
+    <div *ngFor="let car of cars" [style]="getShaftStyle()">
       <app-car [car]="car"
-               [floors]="floors"></app-car>
+               [carCount]="cars.length"
+               [floorCount]="floors.length"></app-car>
     </div>
   </div>
   <div class="floors">
     <app-floor *ngFor="let floor of floors; index as i"
                [floor]="floor"
+               [floorCount]="floors.length"
                [isTop]="i === floors[floors.length - 1].id"
                [isBottom]="i === floors[0].id"
                [floorKeyToRequest]=floorKeyToRequest></app-floor>
@@ -16,5 +18,16 @@
 </div>
 
 <div class="internal-buttons">
-  <app-internal-buttons *ngFor="let car of cars" [car]="car" [floorKeyToRequest]=floorKeyToRequest></app-internal-buttons>
+  <app-internal-buttons *ngFor="let car of cars"
+                        [car]="car"
+                        [carCount]="cars.length"
+                        [floorKeyToRequest]=floorKeyToRequest></app-internal-buttons>
 </div>
+<div class="select-all-panel">
+  <button mat-mini-fab
+          (click)="onSelectAll()"
+          title="Select All">
+    <mat-icon>select_all</mat-icon>
+  </button>
+</div>
+

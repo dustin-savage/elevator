@@ -26,6 +26,9 @@ export class InternalButtonsComponent implements OnInit {
   car: Car;
 
   @Input()
+  carCount: number;
+
+  @Input()
   floorKeyToRequest: any;
 
   floors: Floor[];
@@ -41,7 +44,7 @@ export class InternalButtonsComponent implements OnInit {
     this.elevatorService.getFloors().pipe(take(1)).subscribe({
       next: floors => {
         console.log("Got floors internal.");
-        this.floors = floors;
+        this.floors = floors.reverse();
         this.changeDetectorRef.markForCheck();
       },
       error: err => {
@@ -77,6 +80,14 @@ export class InternalButtonsComponent implements OnInit {
     console.log(JSON.stringify(this.floorKeyToRequest));
     const requestKey = floor + "_" + this.car.id;
     return {lit: this.floorKeyToRequest[requestKey]};
+  }
+
+  getPanelStyle(): any {
+    const totalViewHeight = 80;
+    const floorHeight = totalViewHeight / this.floors.length;
+    return {
+      width: "calc(" + floorHeight + "vh + " + this.carCount + "px)"
+    };
   }
 
 }
