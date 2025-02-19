@@ -35,7 +35,12 @@ import {FloorComponent} from "./floor/floor.component";
   ],
   exports: [],
   providers: [
-    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 3000}},
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {
+      duration: 3000,
+        horizontalPosition: "center",
+        verticalPosition: "top"
+      }
+    },
     provideHttpClient()
   ]
 })

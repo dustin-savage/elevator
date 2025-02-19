@@ -14,10 +14,9 @@
   .shafts {
     position: absolute;
     height: 100%;
-    width: 100%;
+    width: calc(100% - 90px); // Leave room for floor buttons on right.
     display: flex;
-    gap: 100px;
-    justify-content: space-evenly;
+    justify-content: space-between;
   }
 }
 
@@ -25,9 +24,26 @@
   position: fixed;
   bottom: 0px;
   height: calc(20vh - 64px);
-  width: 100%;
+  width: calc(100% - 75px); // Leave room for floor buttons on right and scroll bar.
   display: flex;
-  gap: 100px;
-  justify-content: space-evenly;
+  justify-content: space-between;
   background-color: #2e3439;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.select-all-panel {
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+  height: calc(20vh - 64px);
+  width: calc(75px);
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #2e3439;
+  align-items: center;
+  button {
+    cursor: pointer;
+  }
 }

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, input, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {Floor} from "../model/floor";
 import {CarRequest} from "../model/car-request";
 import {RequestService} from "../service/request.service";
@@ -20,6 +20,9 @@ import {CommonModule} from "@angular/common";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FloorComponent {
+  @Input()
+  floorCount: number;
+
   @Input()
   floor: Floor;
 
@@ -65,6 +68,15 @@ export class FloorComponent {
       assignedCarId: -1
     });
     return {lit: this.floorKeyToRequest[floorKey]};
+  }
+
+  getFloorStyle() {
+    // total shaft height is 80vh
+    const totalViewHeight = 80;
+    const floorHeight = totalViewHeight / this.floorCount;
+    return {
+      height: "calc(" + floorHeight + "vh - 2px)"
+    };
   }
 
 }

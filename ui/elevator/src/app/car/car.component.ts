@@ -18,7 +18,10 @@ export class CarComponent {
   car: Car;
 
   @Input()
-  floors: Floor[];
+  carCount: number;
+
+  @Input()
+  floorCount: number;
 
   getCarClass() {
     return {
@@ -31,11 +34,12 @@ export class CarComponent {
   getCarStyle() {
     // total shaft height is 80vh
     const totalViewHeight = 80;
-    const floorHeight = totalViewHeight / this.floors.length;
+    const floorHeight = totalViewHeight / this.floorCount;
     const marginTop = totalViewHeight - ((this.car.currentFloor + 1) * floorHeight);
     return {
       marginTop: "calc(" + marginTop + "vh - 2px)",
-      height: "calc(" + floorHeight + "vh - 4px)"
+      height: "calc(" + floorHeight + "vh - 4px)",
+      width: "100%"
     };
   }
 

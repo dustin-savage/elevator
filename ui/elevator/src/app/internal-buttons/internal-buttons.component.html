@@ -1,11 +1,12 @@
-<div class="panel-container">
-  <div class="label">Internal Button Panel</div>
-  <div class="button-container">
-    <div *ngIf="floors">
-      <button *ngFor="let floor of floors"
-              mat-mini-fab
-              (click)="onRequest(floor)"
-              [ngClass]="getButtonStyle(floor.id)">{{floor.name}}</button>
-    </div>
+<div class="panel-container"
+     *ngIf="floors?.length && carCount"
+     [style]="getPanelStyle()">
+  <div class="button-container"
+       *ngIf="floors"
+       [style]="getPanelStyle()">
+    <button *ngFor="let floor of floors"
+            mat-mini-fab
+            (click)="onRequest(floor)"
+            [ngClass]="getButtonStyle(floor.id)">{{floor.name}}</button>
   </div>
 </div>
